@@ -16,6 +16,10 @@ variable "region" {
   default = "westus"
 }
 
+variable "vm_hostname" {
+  default = "tfe-linux-demo"
+}
+
 variable "remote_port" {
   default = "22"
 }
