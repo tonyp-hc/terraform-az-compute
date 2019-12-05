@@ -15,6 +15,7 @@ module "linuxservers" {
   data_disk                     = "true"
   data_disk_size_gb             = "${var.data_disk_size}"
   data_sa_type                  = "${var.data_sa_type}"
+  ssh_key                       = "${var.ssh_public_key}"
 
   tags = {
     environment = "${var.env}"
