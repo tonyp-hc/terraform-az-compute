@@ -5,6 +5,7 @@ module "linuxservers" {
   location                      = "${var.region}"
   vm_hostname                   = "${var.vm_hostname}"
   nb_public_ip                  = "1"
+  public_ip_dns                 = ["tfelinuxdemo"]
   remote_port                   = "${var.remote_port}"
   nb_instances                  = "${var.nb_instances}"
   vm_os_publisher               = "Canonical"
