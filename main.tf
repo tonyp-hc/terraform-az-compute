@@ -1,5 +1,6 @@
 module "linuxservers" {
-  source  = "app.terraform.io/TonyPulickal/compute/azurerm"
+  source                        = "app.terraform.io/TonyPulickal/compute/azurerm"
+  version                       = "1.3.1"
   resource_group_name           = "${var.prefix}-rg-tfe"
   location                      = "${var.region}"
   vm_hostname                   = "${var.vm_hostname}"
