@@ -40,9 +40,6 @@ variable "data_sa_type" {
   default = "Premium_LRS"
 }
 
-variable "ssh_public_key" {
-}
-
 data "terraform_remote_state" "vnet" {
   backend = "remote"
   config = {
