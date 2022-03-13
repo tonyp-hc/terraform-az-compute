@@ -21,10 +21,6 @@ module "linuxservers" {
   nb_instances                      = var.nb_instances
   vnet_subnet_id                    = data.terraform_remote_state.vnet.outputs.az_network_subnets[0]
   delete_os_disk_on_termination     = var.delete_disk
-  delete_data_disks_on_termination  = var.delete_disk 
-  nb_data_disk                      = 1 
-  data_disk_size_gb                 = var.data_disk_size
-  data_sa_type                      = var.data_sa_type
   ssh_key                           = var.ssh_public_key
 
   tags = {
