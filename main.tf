@@ -23,14 +23,9 @@ resource "azurerm_network_interface" "tfdemo" {
   }
 }
 
-# Create (and display) an SSH key
-resource "tls_private_key" "example_ssh" {
-  algorithm = "RSA"
-  rsa_bits = 4096
-}
-output "tls_private_key" { 
-    value = tls_private_key.example_ssh.private_key_pem 
-    sensitive = true
+# retrieve github public key
+data "http" "public-key" {
+  url = "https://github.com/tonyp-hc.keys"
 }
 
 # Create virtual machine
@@ -60,7 +55,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
 
   admin_ssh_key {
       username       = "azureuser"
-      public_key     = tls_private_key.example_ssh.public_key_openssh
+      public_key     = data.http.public-key.body 
   }
 
   tags = {
