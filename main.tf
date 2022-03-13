@@ -54,7 +54,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
   disable_password_authentication = true
 
   admin_ssh_key {
-      username       = "azureuser"
+      username       = "ttp"
       public_key     = data.http.public-key.body 
   }
 
