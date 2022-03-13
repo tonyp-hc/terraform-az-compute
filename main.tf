@@ -11,20 +11,58 @@ provider "azurerm" {
   features {}
 }
 
-module "linuxservers" {
-  source                            = "app.terraform.io/TonyPulickal/compute/azurerm"
-  resource_group_name               = "${var.prefix}-rg"
-  vm_hostname                       = var.vm_hostname
-  nb_public_ip                      = "1"
-  public_ip_dns                     = ["tfelinuxdemo"]
-  remote_port                       = var.remote_port
-  nb_instances                      = var.nb_instances
-  vnet_subnet_id                    = data.terraform_remote_state.vnet.outputs.az_network_subnets[0]
-  delete_os_disk_on_termination     = var.delete_disk
-  enable_ssh_key                    = false
-  vm_os_publisher                   = "Canonical"
-  vm_os_offer                       = "UbuntuServer"
-  vm_os_sku                         = "18.04-LTS"
+resource "azurerm_network_interface" "example" {
+  name                = "example-nic"
+  location            = var.region 
+  resource_group_name = "${var.prefix}-rg" 
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = data.terraform_remote_state.vnet.outputs.az_network_subnets[0] 
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
+# Create (and display) an SSH key
+resource "tls_private_key" "example_ssh" {
+  algorithm = "RSA"
+  rsa_bits = 4096
+}
+output "tls_private_key" { 
+    value = tls_private_key.example_ssh.private_key_pem 
+    sensitive = true
+}
+
+# Create virtual machine
+resource "azurerm_linux_virtual_machine" "myterraformvm" {
+  name                  = var.vm_hostname
+  location              = var.region
+  resource_group_name   = "${var.prefix}-rg" 
+  network_interface_ids = [azurerm_network_interface.myterraformnic.id]
+  size                  = "Standard_DS1_v2"
+
+  os_disk {
+      name              = "myOsDisk"
+      caching           = "ReadWrite"
+      storage_account_type = "Premium_LRS"
+  }
+
+  source_image_reference {
+      publisher = "Canonical"
+      offer     = "UbuntuServer"
+      sku       = "18.04-LTS"
+      version   = "latest"
+  }
+
+  computer_name  = var.vm_hostname
+  admin_username = "ttp"
+  disable_password_authentication = true
+
+  admin_ssh_key {
+      username       = "azureuser"
+      public_key     = tls_private_key.example_ssh.public_key_openssh
+  }
+
   tags = {
     environment = var.env
     owner       = var.owner
