@@ -11,8 +11,8 @@ provider "azurerm" {
   features {}
 }
 
-resource "azurerm_network_interface" "example" {
-  name                = "example-nic"
+resource "azurerm_network_interface" "tfdemo" {
+  name                = "ttp-demo-nic"
   location            = var.region 
   resource_group_name = "${var.prefix}-rg" 
 
@@ -38,7 +38,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
   name                  = var.vm_hostname
   location              = var.region
   resource_group_name   = "${var.prefix}-rg" 
-  network_interface_ids = [azurerm_network_interface.myterraformnic.id]
+  network_interface_ids = [azurerm_network_interface.tfdemo.id]
   size                  = "Standard_DS1_v2"
 
   os_disk {
